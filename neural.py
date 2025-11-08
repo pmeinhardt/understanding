@@ -7,27 +7,33 @@ import random
 
 
 class Node:
-  def __init__(self, data: float, pred: set[Node]):
-    self.data, self.pred = data, pred
+  def __init__(self, data: float | int, pred: set[Node]):
+    self.data, self.pred = float.from_number(data), pred
 
-  def __add__(self, other: Node | float):
+  def __add__(self, other: Node | float | int):
     other = other if isinstance(other, Node) else Value(other)
     return Addition(self, other)
 
-  def __mul__(self, other: Node | float):
+  def __radd__(self, other: float | int):
+    return Addition(Value(other), self)
+
+  def __mul__(self, other: Node | float | int):
     other = other if isinstance(other, Node) else Value(other)
     return Multiplication(self, other)
 
-  def __rmul__(self, other: float):
+  def __rmul__(self, other: float | int):
     return Multiplication(Value(other), self)
 
   def __neg__(self):
     return self * -1.0
 
-  def __sub__(self, other: Node | float):
+  def __sub__(self, other: Node | float | int):
     return self + -other
 
-  def __pow__(self, other: float):
+  def __rsub__(self, other: float | int):
+    return Value(other) + -self
+
+  def __pow__(self, other: float | int):
     return Power(self, other)
 
   def backprop(self, grad: float):
@@ -70,7 +76,7 @@ class Multiplication(Node):
 
 
 class Power(Node):
-  def __init__(self, n: Node, e: int | float):
+  def __init__(self, n: Node, e: float | int):
     super().__init__(n.data**e, {n})
     self.n, self.e = n, e
 
@@ -192,7 +198,7 @@ if __name__ == '__main__':
     pred = [nn(x)[0] for x in xs] # type: ignore[arg-type]
 
     # compute loss
-    loss = sum(((Value(target) - actual)**2 for (target, actual) in zip(ys, pred)), Value(0.0))
+    loss = sum((target - actual)**2 for (target, actual) in zip(ys, pred))
 
     # compute gradients
     grads = backprop(loss)
