@@ -7,7 +7,7 @@ import random
 
 
 class Node:
-  def __init__(self, data: float, pred: Set[Node]):
+  def __init__(self, data: float, pred: set[Node]):
     self.data, self.pred = data, pred
 
   def __add__(self, other: Node | float):
@@ -130,7 +130,7 @@ class Neuron:
     self.w = [Value(random.uniform(-1.0, 1.0)) for _ in range(nin)] # weights
     self.b = Value(random.uniform(-1.0, 1.0)) # bias
 
-  def __call__(self, x: [Node]):
+  def __call__(self, x: list[Node | float]):
     act = sum((wi * xi for wi, xi in zip(self.w, x)), self.b)
     return tanh(act)
 
@@ -142,7 +142,7 @@ class Layer:
   def __init__(self, nin: int, nout: int):
     self.neurons = [Neuron(nin) for _ in range(nout)]
 
-  def __call__(self, x: [Node]):
+  def __call__(self, x: list[Node | float]):
     return [n(x) for n in self.neurons]
 
   def __iter__(self):
@@ -159,10 +159,10 @@ class Layer:
 
 
 class MLP:
-  def __init__(self, nin: int, nouts: [int]):
+  def __init__(self, nin: int, nouts: list[int]):
     self.layers = [Layer(nin, nout) for nin, nout in pairwise([nin] + nouts)]
 
-  def __call__(self, x: [Node | float]):
+  def __call__(self, x: list[Node | float]):
     x = [xi if isinstance(xi, Node) else Value(xi) for xi in x]
     return reduce(lambda y, layer: layer(y), self.layers, x)
 
@@ -189,7 +189,7 @@ if __name__ == '__main__':
 
   for k in range(100):
     # forward pass
-    pred = [nn(x)[0] for x in xs]
+    pred = [nn(x)[0] for x in xs] # type: ignore[arg-type]
 
     # compute loss
     loss = sum(((Value(target) - actual)**2 for (target, actual) in zip(ys, pred)), Value(0.0))
