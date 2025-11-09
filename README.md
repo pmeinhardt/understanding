@@ -11,4 +11,7 @@ python3 -m unittest
 
 # Type-check
 uv run mypy .
+
+# Notebooks
+uv jupyter lab
 ```
