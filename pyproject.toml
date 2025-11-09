@@ -11,4 +11,5 @@ dev = [
     "graphviz>=0.21",
     "jupyterlab>=4.4.10",
     "mypy>=1.18.2",
+    "pandas>=2.3.3",
 ]
