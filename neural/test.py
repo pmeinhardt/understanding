@@ -1,6 +1,6 @@
 from unittest import main, TestCase
 
-from neural import backprop, tanh, Value
+from .core import backprop, tanh, Value
 
 
 class TestPropagation(TestCase):

@@ -1,10 +1,5 @@
-from functools import reduce
-from itertools import pairwise
-from typing import Callable
-
 import graphlib
 import math
-import random
 
 
 class Node:
@@ -130,87 +125,3 @@ def backprop(start: Node):
         grads[child] = grad
 
   return grads
-
-
-class Neuron:
-  def __init__(self, nin: int, phi: Callable[[Node], Node]):
-    self.w = [Value(random.uniform(-1.0, 1.0)) for _ in range(nin)] # weights
-    self.b = Value(random.uniform(-1.0, 1.0)) # bias
-    self.f = phi # activation function
-
-  def __call__(self, x: list[Node | float]):
-    act = sum((wi * xi for wi, xi in zip(self.w, x)), self.b)
-    return self.f(act)
-
-  def params(self):
-    return self.w + [self.b]
-
-
-class Layer:
-  def __init__(self, nin: int, nout: int, phi: Callable[[Node], Node]):
-    self.neurons = [Neuron(nin, phi) for _ in range(nout)]
-
-  def __call__(self, x: list[Node | float]):
-    return [n(x) for n in self.neurons]
-
-  def __iter__(self):
-    return iter(self.neurons)
-
-  def __len__(self):
-    return len(self.neurons)
-
-  def __get__(self, index: int):
-    return self.neurons[index]
-
-  def params(self):
-    return [p for n in self.neurons for p in n.params()]
-
-
-class MLP:
-  def __init__(self, nin: int, nouts: list[int], phi: Callable[[Node], Node]):
-    self.layers = [Layer(nin, nout, phi) for nin, nout in pairwise([nin] + nouts)]
-
-  def __call__(self, x: list[Node | float]):
-    x = [xi if isinstance(xi, Node) else Value(xi) for xi in x]
-    return reduce(lambda y, layer: layer(y), self.layers, x)
-
-  def __iter__(self):
-    return iter(self.layers)
-
-  def __len__(self):
-    return len(self.layers)
-
-  def __get__(self, index: int):
-    return self.layers[index]
-
-  def params(self):
-    return [p for l in self.layers for p in l.params()]
-
-
-if __name__ == '__main__':
-  nn = MLP(3, [4, 4, 1], tanh) # 3 inputs, 2 hidden layers of 4 neurons, 1 output
-
-  params = nn.params() # gather parameters
-
-  xs = [[2.0, 3.0, -1.0], [3.0, -1.0, 0.5], [1.0, 1.0, -1.0], [0.5, 1.0, 1.0]] # inputs
-  ys = [1.0, -1.0, 1.0, -1.0] # expected outputs
-
-  for k in range(100):
-    # forward pass
-    pred = [nn(x)[0] for x in xs] # type: ignore[arg-type]
-
-    # compute loss
-    loss = sum((target - actual)**2 for (target, actual) in zip(ys, pred))
-
-    # compute gradients
-    grads = backprop(loss)
-
-    # perform gradient descent
-    for p in params:
-      p.data -= 0.1 * grads[p]
-
-    # print loss and predictions
-    print(f"{k:-2}: {loss.data}, pred: {[p.data for p in pred]}")
-
-  # final predictions
-  print([p.data for p in pred])
