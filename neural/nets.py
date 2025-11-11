@@ -1,6 +1,6 @@
+from collections.abc import Callable
 from functools import reduce
 from itertools import pairwise
-from typing import Callable
 
 import random
 
