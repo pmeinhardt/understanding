@@ -34,7 +34,7 @@ class Layer:
   def __len__(self):
     return len(self.neurons)
 
-  def __get__(self, index: int):
+  def __getitem__(self, index: int):
     return self.neurons[index]
 
   def params(self):
@@ -55,7 +55,7 @@ class MLP:
   def __len__(self):
     return len(self.layers)
 
-  def __get__(self, index: int):
+  def __getitem__(self, index: int):
     return self.layers[index]
 
   def params(self):
