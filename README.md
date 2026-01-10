@@ -46,6 +46,7 @@ Things I want to learn more about:
 - [Andrej Karpathy: Deep Dive into LLMs like ChatGPT](https://www.youtube.com/watch?v=7xTGNNLPyMI)
 - [Andrej Karpathy: Zero to Hero](https://karpathy.ai/zero-to-hero.html), [YouTube playlist](https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ)
 - [Standford CS230: Deep Learning (YouTube playlist)](https://www.youtube.com/playlist?list=PLoROMvodv4rNRRGdS0rBbXOUGA0wjdh1X)
+- [3Blue1Brown: Neural networks](https://youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi&si=xq1vvXE2e5U87Cv6)
 
 ## Tools
 
